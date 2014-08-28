@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Zamira Mobile Application</title>
+        <meta charset="UTF-8">        
+        <meta name="viewport" content="width=device-width, initial-scale=1">        
+        <link rel="stylesheet" type="text/css" href="libs/jquery-mobile/css/jquery.mobile-1.4.3.min.css" />
+        <link rel="stylesheet" type="text/css" href="libs/jquery-mobile-datepicker/css/jquery.mobile.datepicker.css" />        
+        <link rel="stylesheet" type="text/css" href="libs/jquery-mobile-datepicker/css/jquery.mobile.datepicker.theme.css" />  
+        
+        <script type="text/javascript" src="libs/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="libs/jquery-mobile/js/jquery.mobile-1.4.3.min.js"></script>
+        <script type="text/javascript" src="libs/jquery-ui/js/datepicker.js"></script>
+        <script type="text/javascript" src="libs/jquery-mobile-datepicker/js/jquery.mobile.datepicker.js"></script>
+        <script type="text/javascript">
+            $( document ).on( "pagecreate", "#SampleListPage", function() {
+                $( document ).on( "swipeleft swiperight", "#SampleListPage", function( e ) {
+                    // We check if there is no open panel on the page because otherwise
+                    // a swipe to close the left panel would also open the right panel (and v.v.).
+                    // We do this by checking the data that the framework stores on the page element (panel: open).
+                    if ( $( ".ui-page-active" ).jqmData( "panel" ) !== "open" ) {
+                        if ( e.type === "swipeleft" ) {
+                            $( "#right-panel" ).panel( "open" );
+                        } else if ( e.type === "swiperight" ) {
+                            $( "#left-panel" ).panel( "open" );
+                        }
+                    }
+                });
+            });
+            
+            var pictureSource;   // picture source
+            var destinationType; // sets the format of returned value 
+
+            // Wait for Cordova to connect with the device
+            //
+            document.addEventListener("deviceready",onDeviceReady,false);
+
+            // Cordova is ready to be used!
+            //
+            function onDeviceReady() {
+                pictureSource = navigator.camera.PictureSourceType;
+                destinationType = navigator.camera.DestinationType;
+            }
+
+            // Called when a photo is successfully retrieved
+            //
+            function onPhotoDataSuccess(imageData) {
+              // Uncomment to view the base64 encoded image data
+              // console.log(imageData);
+
+              // Get image handle
+              //
+              var smallImage = document.getElementById('smallImage');
+
+              // Unhide image elements
+              //
+              smallImage.style.display = 'block';
+
+              // Show the captured photo
+              // The inline CSS rules are used to resize the image
+              //
+              smallImage.src = "data:image/jpeg;base64," + imageData;
+            }
+
+            // Called when a photo is successfully retrieved
+            //
+            function onPhotoURISuccess(imageURI) {
+              // Uncomment to view the image file URI 
+              // console.log(imageURI);
+
+              // Get image handle
+              //
+              var largeImage = document.getElementById('largeImage');
+
+              // Unhide image elements
+              //
+              largeImage.style.display = 'block';
+
+              // Show the captured photo
+              // The inline CSS rules are used to resize the image
+              //
+              largeImage.src = imageURI;
+            }
+
+            // A button will call this function
+            //
+            function capturePhoto() {
+              // Take picture using device camera and retrieve image as base64-encoded string
+              navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50,
+                destinationType: destinationType.DATA_URL });
+            }
+
+            // A button will call this function
+            //
+            function capturePhotoEdit() {
+              // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
+              navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
+                destinationType: destinationType.DATA_URL });
+            }
+
+            // A button will call this function
+            //
+            function getPhoto(source) {
+              // Retrieve image file location from specified source
+              navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50, 
+                destinationType: destinationType.FILE_URI,
+                sourceType: source });
+            }
+
+            // Called if something bad happens.
+            // 
+            function onFail(message) {
+              alert('Failed because: ' + message);
+            }
+        </script>
+    </head>
+    <body>
+        
+        <div data-role="page" id="LoginPage">
+            <div data-role="header" data-theme="b" data-position="fixed">
+                <h1>Zamira Management System</h1>
+            </div>
+            <div role="main" class="ui-content" align="center">                
+                <img src="images/zamira_logo_250_99.png" />
+                <input type="text" name="username" id="usernameField" placeholder="Username">
+                <input type="password" name="password" id="passwordField" placeholder="Password">
+                <a href="#SampleListPage" class="ui-btn ui-icon-power ui-btn-icon-left ui-shadow-icon">Log In</a>                
+            </div>
+            <div data-role="footer" data-theme="b" data-position="fixed">
+                <h4>&COPY; 2014</h4>
+            </div>
+        </div>
+        
+        
+        
+        <div data-role="page" id="SampleListPage">                            
+            <div data-role="header" data-theme="b" data-position="fixed">
+                <img src="images/zamira_logo_88_35.png" class="ui-btn-left" />
+                <h1>Sample List</h1>
+                <a href="#LoginPage" class="ui-btn-right ui-btn ui-btn-a ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-power">Logout</a>
+            </div>
+            <div role="main" class="ui-content" >                
+                <ul data-role="listview" data-filter="true" data-filter-placeholder="Search..." data-inset="true">
+                    <li><a href="#SampleEditPage">
+                        <img src="images/samples/sample1.png">
+                        <p><b>Sample Code : </b>M/0010/04/CDWRA/IL</p>
+                        <p><b>Category : </b>Mens</p>
+                        <p><b>Customer : </b>Customer A</p>
+                    </a>
+                    </li>
+                    <li><a href="#SampleEditPage">
+                        <img src="images/samples/sample2.png">
+                        <p><b>Sample Code : </b>M/0010/03/CDWRA/IL</p>
+                        <p><b>Category : </b>Mens</p>
+                        <p><b>Customer : </b>Customer D</p>
+                    </a>
+                    </li>
+                    <li><a href="#SampleEditPage">
+                        <img src="images/samples/sample3.png">
+                        <p><b>Sample Code : </b>M/0011/01/CBALF/IL</p>
+                        <p><b>Category : </b>Kids</p>
+                        <p><b>Customer : </b>Customer D</p>
+                    </a>
+                    </li>
+                    <li><a href="#SampleEditPage">
+                        <img src="images/samples/sample4.png">
+                        <p><b>Sample Code : </b>L/0009/01/CBALF/IL</p>
+                        <p><b>Category : </b>Ladies</p>
+                        <p><b>Customer : </b>Customer C</p>
+                    </a>
+                    </li>
+                    <li><a href="#SampleEditPage">
+                        <img src="images/samples/sample5.png">
+                        <p><b>Sample Code : </b>B/0005/01/CCWOO/IL</p>
+                        <p><b>Category : </b>Mens</p>
+                        <p><b>Customer : </b>Customer D</p>
+                    </a>
+                    </li>
+                    <li><a href="#SampleEditPage">
+                        <img src="images/samples/sample6.png">
+                        <p><b>Sample Code : </b>B/0005/01/CCWOO/IL</p>
+                        <p><b>Category : </b>Mens</p>
+                        <p><b>Customer : </b>Customer C</p>
+                    </a>
+                    </li>
+                    <li><a href="#SampleEditPage">
+                        <img src="images/samples/sample7.png">
+                        <p><b>Sample Code : </b>B/0005/01/CCWOO/IL</p>
+                        <p><b>Category : </b>Mens</p>
+                        <p><b>Customer : </b>Customer B</p>
+                    </a>
+                    </li>
+                </ul>
+            </div>
+            <div data-role="footer" data-theme="b" data-position="fixed">                
+                <h4>&COPY; 2014</h4>
+            </div>
+            <div data-role="panel" id="left-panel" data-theme="c">
+                <h2>Search Panel</h2>
+                <div>
+                    <label for="select-native-2"><b>Category</b></label>
+                    <select name="select-native-2" id="select-native-2" data-mini="true">
+                        <option value="">Select Category</option>
+                        <option value="mens">Mens</option>
+                        <option value="ladies">Ladies</option>
+                        <option value="kids">Kids</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="text-basic"><b>Sample Code</b></label>
+                    <input type="text" name="sample_code" id="sample_code" placeholder="Sample Code" value="" data-mini="true">
+                </div>
+                <div>
+                    <label for="select-native-2"><b>Date Creation</b></label>
+                    <input type="text" data-role="date" name="datepicker">
+                </div>
+                <div>
+                    <label for="select-native-2"><b>Customer</b></label>
+                    <select name="select-native-2" id="select-native-2" data-mini="true">
+                        <option value="">Select Customer</option>
+                        <option value="cusa">Customer A</option>
+                        <option value="cusb">Customer B</option>
+                        <option value="cusc">Customer C</option>
+                        <option value="cusd">Customer D</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="select-native-2"><b>Merchandise Category</b></label>
+                    <select name="select-native-2" id="select-native-2" data-mini="true">
+                        <option value="">Select Merchandise</option>
+                        <option value="cusa">Denim</option>
+                        <option value="cusb">Non Denim</option>
+                        <option value="cusc">Leather</option>
+                        <option value="cusd">Waken</option>
+                    </select>
+                </div>
+                <div>
+                    <br>
+                    <button class="ui-shadow ui-btn-b ui-btn ui-corner-all ui-mini" type="button" id="submit-2">Submit</button>
+                </div>
+                <!-- <a href="#" data-rel="close" class="ui-btn ui-corner-all ui-shadow ui-mini ui-btn-inline ui-icon-delete ui-btn-icon-left ui-btn-right">Close</a> -->
+            </div><!-- /panel -->
+        </div>
+        
+        
+        
+        <div data-role="page" id="SampleEditPage">
+            <div data-role="header" data-theme="b" data-position="fixed">
+                <img src="images/zamira_logo_88_35.png" class="ui-btn-left" />
+                <h1>Sample Edit</h1>                
+                <a href="#LoginPage" class="ui-btn-right ui-btn ui-btn-a ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-power">Logout</a>
+            </div>
+            <div role="main" class="ui-content">
+                <div data-role="collapsibleset" data-theme="a" data-content-theme="a">
+                    <div data-role="collapsible" data-collapsed="false">
+                        <h3>Sample</h3>
+                        <div class="ui-grid-a ui-responsive">
+                            <div class="ui-block-a"><div class="ui-body ui-body-d">
+                                <label for="select-native-2"><b>Category</b></label>
+                                <select name="select-native-2" id="select-native-2" data-mini="true">                                    
+                                    <option value="mens">Mens</option>
+                                    <option value="ladies">Ladies</option>
+                                    <option value="kids">Kids</option>
+                                </select>
+                                </div></div>
+                            <div class="ui-block-b"><div class="ui-body ui-body-d">
+                                <label for="text-basic"><b>Sample Code</b></label>
+                                <input type="text" name="sample_code" id="sample_code" placeholder="Sample Code" value="M/0010/04/CDWRA/IL" data-mini="true">
+                                </div></div>
+                        </div><!-- /grid-a -->
+                        <div class="ui-grid-a ui-responsive">
+                            <div class="ui-block-a"><div class="ui-body ui-body-d">
+                                <label for="text-basic"><b>Date Creation</b></label>
+                                <input type="text" name="sample_code" id="sample_code" placeholder="Sample Code" value="2014-04-21" data-mini="true">
+                                </div></div>
+                            <div class="ui-block-b"><div class="ui-body ui-body-d">
+                                <label for="text-basic"><b>Sample Developer Name</b></label>
+                                <input type="text" name="sample_code" id="sample_code" placeholder="Sample Code" value="Andrew" data-mini="true">
+                                </div></div>
+                        </div><!-- /grid-a -->
+                        <div class="ui-grid-a ui-responsive">
+                            <div class="ui-block-a"><div class="ui-body ui-body-d">
+                                <label for="select-native-2"><b>Location</b></label>
+                                <select name="select-native-2" id="select-native-2" data-mini="true">                                    
+                                    <option value="mens">Bangalore - India - IN</option>
+                                    <option value="ladies">Chennai - India - IN</option>
+                                    <option value="kids">Mumbai - India - IN</option>
+                                </select>
+                                </div></div>
+                            <div class="ui-block-b"><div class="ui-body ui-body-d">
+                                <label for="text-basic"><b>Sample Mfg Qty</b></label>
+                                <input type="text" name="sample_code" id="sample_code" placeholder="Sample Code" value="10" data-mini="true">
+                                </div></div>
+                        </div><!-- /grid-a -->
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>Customer</h3>
+                        <div>
+                            <label for="text-basic"><b>Customer</b></label>
+                            <select name="select-native-2" id="select-native-2" data-mini="true">
+                                <option value="">Select Customer</option>
+                                <option value="cusa">Customer A</option>
+                                <option value="cusb">Customer B</option>
+                                <option value="cusc">Customer C</option>
+                                <option value="cusd">Customer D</option>
+                            </select>
+                            <select name="select-native-2" id="select-native-2" data-mini="true">                                    
+                                <option value="mens">Bangalore</option>
+                                <option value="ladies">Chennai</option>
+                                <option value="kids">Mumbai</option>
+                            </select>
+                            <select name="select-native-2" id="select-native-2" data-mini="true">                                    
+                                <option value="mens">Lee</option>
+                                <option value="ladies">Wrangler</option>
+                                <option value="kids">Spring</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="text-basic"><b>Customer Style Description</b></label>
+                            <input type="text" name="sample_code" id="sample_code" placeholder="Sample Code" value="Test" data-mini="true">
+                        </div>
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>Images</h3>
+                        <div class="ui-grid-a">
+                            <div class="ui-block-a"><div class="ui-bar ui-bar-d" ><img src="images/samples/sample_1.png" /></div></div>
+                            <div class="ui-block-b"><div class="ui-bar ui-bar-d" ><img src="images/samples/sample_2.png" /></div></div>
+                        </div><!-- /grid-a -->
+                        <div class="ui-grid-a">
+                            <div class="ui-block-a"><div class="ui-bar ui-bar-d" >
+                                <div id="custom-border-radius">
+                                    <a href="javascript:void(0)" onclick="capturePhoto()" class="ui-btn ui-icon-camera ui-btn-icon-notext ui-corner-all">No text</a>
+                                </div>
+                                </div></div>
+                            <div class="ui-block-b"><div class="ui-bar ui-bar-d" >
+                                <div id="custom-border-radius">
+                                    <a href="javascript:void(0)" onclick="capturePhoto()" class="ui-btn ui-icon-camera ui-btn-icon-notext ui-corner-all">No text</a>
+                                </div>
+                                </div></div>
+                        </div><!-- /grid-a -->
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>Fabric</h3>
+                        <ul data-role="listview">
+                            <li><table><tr>
+                                        <td>Zamira Code:</td>
+                                        <td><b>ZF-AQ018-CO</b></td>                                        
+                                    </tr><tr>
+                                        <td>Fabric Code:</td>
+                                        <td><b>ASDFG</b></td>
+                                    </tr><tr>
+                                        <td>Supplier Name:</td>
+                                        <td><b>Advance Denim Co.,Ltd (QianJin) / 廣東前進牛仔布有限公司</b></td>                                        
+                                    </tr><tr>
+                                        <td>Composition:</td>
+                                        <td><b>100.00%COTTON</b></td>                                        
+                                    </tr><tr>
+                                        <td>Construction:</td>
+                                        <td><b>10.5 X 11.50 / 84 X 55</b></td>                                        
+                                    </tr><tr>
+                                        <td>Width:</td>
+                                        <td><b>57/58</b></td>                                        
+                                    </tr><tr>
+                                        <td>Weight:</td>
+                                        <td><b>10.20</b></td>
+                                    </tr><tr>
+                                        <td>Fabric Consumption:</td>
+                                        <td><b>365.44</b></td>                                        
+                                    </tr><tr>
+                                        <td>Remarks:</td>
+                                        <td><b>SHUNFENG / 顺德展朗纺织</b></td>                                        
+                                    </tr></table></li>
+                            <li><table><tr>
+                                        <td>Zamira Code:</td>
+                                        <td><b>ZF-SY002-CN</b></td>                                        
+                                    </tr><tr>
+                                        <td>Fabric Code:</td>
+                                        <td><b>TEST</b></td>
+                                    </tr><tr>
+                                        <td>Supplier Name:</td>
+                                        <td><b>SHUNFENG / 顺德展朗纺织</b></td>                                        
+                                    </tr><tr>
+                                        <td>Composition:</td>
+                                        <td><b>100.00%COTTON</b></td>                                        
+                                    </tr><tr>
+                                        <td>Construction:</td>
+                                        <td><b>10.5 X 11.50 / 84 X 55</b></td>                                        
+                                    </tr><tr>
+                                        <td>Width:</td>
+                                        <td><b>57/58</b></td>                                        
+                                    </tr><tr>
+                                        <td>Weight:</td>
+                                        <td><b>10.20</b></td>
+                                    </tr><tr>
+                                        <td>Fabric Consumption:</td>
+                                        <td><b>365.44</b></td>                                        
+                                    </tr><tr>
+                                        <td>Remarks:</td>
+                                        <td><b>SHUNFENG / 顺德展朗纺织</b></td>                                        
+                                    </tr></table></li>                            
+                        </ul>
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>Description</h3>
+                        <label for="text-basic"><b>Wash Recipe</b></label>
+                        <textarea cols="40" rows="3" name="textarea-2" id="textarea-2">Wash the cloth with washing powder and don't use bleaching powder</textarea>
+                        <label for="text-basic"><b>Style Description</b></label>
+                        <input type="text" name="sample_code" id="sample_code"  value="Power stretch 4" data-mini="true">
+                        <label for="text-basic"><b>Color Name</b></label>
+                        <input type="text" name="sample_code" id="sample_code"  value="Blue" data-mini="true">
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>Merchandise Category</h3>
+                        <label for="select-native-2"><b>Merchandise Category</b></label>
+                        <select name="select-native-2" id="select-native-2" data-mini="true">                            
+                            <option value="cusa">Denim</option>
+                            <option value="cusb">Non Denim</option>
+                            <option value="cusc">Leather</option>
+                            <option value="cusd">Waken</option>
+                        </select>
+                        <label for="select-native-2"><b>Product Sub Category</b></label>
+                        <select name="select-native-2" id="select-native-2" data-mini="true">                            
+                            <option value="cusa">Pant</option>
+                            <option value="cusb">Shirt</option>                            
+                        </select>
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>Remarks</h3>
+                        <label for="text-basic"><b>Remarks</b></label>
+                        <textarea cols="40" rows="5" name="textarea-2" id="textarea-2">Remarks</textarea>
+                    </div>
+                </div>
+                
+            </div>
+            <div data-role="footer" data-theme="b" data-position="fixed">
+                <a href="#SampleListPage" class="ui-btn-left ui-btn ui-btn-a ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-carat-l">Back</a>
+                <h4>&COPY; 2014</h4>
+                <a href="#SampleListPage" class="ui-btn-right ui-btn ui-btn-a ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-check">Save</a>
+            </div>
+        </div>
+        
+        
+    </body>
+</html>
